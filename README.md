@@ -125,3 +125,28 @@ Se quiser, eu posso também:
 
 - ajustar o `README.md` com instruções específicas para a sua versão do Windows;
 - adicionar um pequeno script `run.sh`/`run.ps1` que automatize ativação + execução.
+
+## O que é o pip e para que serve
+
+`pip` é o instalador de pacotes oficial do ecossistema Python. Ele baixa e instala pacotes (bibliotecas) publicados no Python Package Index (PyPI) ou em repositórios privados. Use `pip` para:
+
+- instalar pacotes individualmente: `pip install pacote`
+- instalar várias dependências de uma vez a partir de `requirements.txt`: `pip install -r requirements.txt`
+- gerar um `requirements.txt` com as versões atuais do ambiente: `pip freeze > requirements.txt`
+
+Dicas rápidas:
+
+- Prefira usar `pip` dentro de um ambiente virtual (`venv`/`virtualenv`) para evitar poluir o Python do sistema.
+- Quando for reproduzir o ambiente (por exemplo em produção, CI ou Databricks), mantenha um `requirements.txt` com versões fixas para garantir reprodutibilidade.
+
+## Usando dependencies no Databricks (resumo)
+
+Há uma pasta `databricks/` neste repositório com um `requirements.txt` (mesmo conteúdo do arquivo raiz) e um exemplo de init script em `databricks/init_scripts/install_requirements.sh`.
+
+Resumo de uso no Databricks:
+
+1. Faça upload de `databricks/requirements.txt` para DBFS (por exemplo em `/FileStore/requirements.txt`).
+2. Configure o script `databricks/init_scripts/install_requirements.sh` como Init Script do cluster (ou adapte o comando `pip install -r /dbfs/FileStore/requirements.txt` em notebooks ou jobs).
+3. Reinicie o cluster para que os pacotes sejam instalados no driver e nos workers.
+
+Consulte `databricks/README.md` para mais detalhes.
