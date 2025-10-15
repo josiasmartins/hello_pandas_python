@@ -44,6 +44,24 @@ pip show pandas
 python -c "import pandas; print(pandas.__file__)"
 ```
 
+O que significa `-r`?
+
+O argumento `-r` do pip significa "read" (ler). Quando você executa `pip install -r requirements.txt`, o pip lê a lista de pacotes e versões dentro desse arquivo e instala cada uma delas. Use `-r` sempre que quiser instalar todas as dependências listadas num `requirements.txt` de uma vez.
+
+Limpar/ver cache do pip
+
+O pip mantém um cache de pacotes baixados para acelerar instalações futuras. Para ver onde fica esse cache use:
+
+```bash
+pip cache dir
+```
+
+Para limpar o cache:
+
+```bash
+pip cache purge
+```
+
 4) Executar o projeto
 
 ```bash
