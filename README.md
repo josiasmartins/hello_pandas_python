@@ -1,152 +1,88 @@
-# hello_pandas
+# hello_pandas — guia simples
 
-Este repositório contém um pequeno projeto Python que usa pandas. Este arquivo explica como instalar as dependências e como executar o projeto.
+Resumo rápido: como preparar ambiente, instalar dependências e executar o projeto.
 
-## Requisitos
-
-- Python 3.8+ instalado
-- pip (vem com o Python)
-- (Opcional) virtualenv/venv para criar um ambiente isolado
-
-> Observação: os exemplos abaixo usam o terminal bash (por exemplo Git Bash, WSL) no Windows. Se preferir PowerShell ou CMD, os comandos de ativação do ambiente virtual mudam um pouco (veja notas abaixo).
-
-## Opção A — Instalar dependências uma-a-uma
-
-1. (Opcional, recomendado) Crie e ative um ambiente virtual:
-
-```bash
-# criar ambiente (venv)
-python -m venv .venv
-
-# ativar no bash (Git Bash / WSL)
-source .venv/Scripts/activate
-
-# No PowerShell:
-# .\.venv\Scripts\Activate.ps1
-
-# No CMD:
-# .\.venv\Scripts\activate.bat
-```
-
-2. Instale as dependências individualmente com pip. Por exemplo, se o projeto precisa de `pandas` e `numpy`:
-
-```bash
-pip install pandas
-pip install numpy
-```
-
-3. Verifique que as instalações funcionaram:
-
-```bash
-python -c "import pandas as pd; import numpy as np; print(pd.__version__, np.__version__)"
-```
-
-4. (Opcional) Gere um `requirements.txt` a partir do ambiente atual:
-
-```bash
-pip freeze > requirements.txt
-```
-
-## Opção B — Usar o arquivo `requirements.txt`
-
-Se o repositório já contém um arquivo `requirements.txt` (veja `requirements.txt` na raiz), você pode instalar tudo de uma vez:
-
-1. Criar e ativar ambiente virtual (recomendado):
+1) Criar e ativar um ambiente virtual (recomendado)
 
 ```bash
 python -m venv .venv
+# Bash (Git Bash / WSL)
 source .venv/Scripts/activate
+# PowerShell
+.\.venv\Scripts\Activate.ps1
+# CMD
+.\.venv\Scripts\activate.bat
 ```
 
-2. Instalar todas as dependências do `requirements.txt`:
+2) Instalar dependências
+
+- Usando o `requirements.txt` do projeto (recomendado):
 
 ```bash
 pip install -r requirements.txt
 ```
 
-3. Verifique a instalação:
+- Ou instalar pacotes únicos:
 
 ```bash
-python -c "import pandas as pd; print(pd.__version__)"
+pip install pandas requests
 ```
 
-## Como executar o projeto
+3) Onde as dependências são salvas
 
-O repositório contém `main.py` e `install_and_run.py`.
+- Se estiver usando o Python do sistema (sem `venv`):
+	- Exemplo no seu caso: `C:\Users\Josias\Documents\Jonas\Anaconda-Python\lib\site-packages` (pasta principal)
+	- Local para `--user`: `C:\Users\Josias\AppData\Roaming\Python\Python39\site-packages`
+- Se estiver usando um `venv`: dentro do próprio venv, por exemplo `.venv\Lib\site-packages` (não commite isso)
+- No Databricks: as instalações via init script ou UI vão para o driver/workers do cluster (não para o repositório)
 
-- Para executar o arquivo principal (caso use `main.py`):
+Comandos úteis para ver onde um pacote está instalado:
+
+```bash
+pip -V
+pip show pandas
+python -c "import pandas; print(pandas.__file__)"
+```
+
+4) Executar o projeto
 
 ```bash
 python main.py
-```
-
-- Para executar o utilitário `install_and_run.py` (se existir uma rotina de instalação/execução lá):
-
-```bash
+# ou
 python install_and_run.py
 ```
 
-Se você estiver usando um ambiente virtual, certifique-se de que ele está ativado antes de rodar os comandos acima.
+5) Não commite o `.venv` no repositório
 
-## Notas sobre Windows
+Adicione ao `.gitignore`:
 
-- No Git Bash, a ativação do `venv` normalmente funciona com `source .venv/Scripts/activate`.
-- No PowerShell (recomendado no Windows moderno), use `.\.venv\Scripts\Activate.ps1`.
-- No CMD clássico, use `.\.venv\Scripts\activate.bat`.
+```
+.venv/
+__pycache__/
+*.pyc
+dist/
+build/
+```
 
-Se encontrar problemas de permissão ao ativar o script no PowerShell, execute `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass` antes de ativar (abrir PowerShell como administrador pode ser necessário).
-
-## Perguntas frequentes (curtas)
-
-- Posso instalar as dependências globalmente? Sim, mas usar um `venv` é altamente recomendado para evitar conflitos com outras projecten e com pacotes do sistema.
-- Como saber quais pacotes instalar manualmente? Abra `requirements.txt` e veja a lista; instale somente os nomes sem versões (ou com versões, se preferir).
-
-## Exemplo rápido
+Se já comitou, remova do git e ignore:
 
 ```bash
-# clonar o repositório
-git clone <repo-url>
-cd hello_pandas
+git rm -r --cached .venv
+echo ".venv/" >> .gitignore
+git add .gitignore
+git commit -m "Remove .venv do repositório"
+```
 
-# criar e ativar venv (bash)
-python -m venv .venv
-source .venv/Scripts/activate
+6) Notas rápidas para Databricks
 
-# instalar dependências
-pip install -r requirements.txt
+- Use `databricks/libs/requirements.txt` ou envie um wheel para DBFS e instale como library no cluster.
+- Exemplo rápido com Databricks CLI (requere configuração):
 
-# executar
-python main.py
+```bash
+cd databricks
+./deploy.sh
 ```
 
 ---
 
-Se quiser, eu posso também:
-
-- ajustar o `README.md` com instruções específicas para a sua versão do Windows;
-- adicionar um pequeno script `run.sh`/`run.ps1` que automatize ativação + execução.
-
-## O que é o pip e para que serve
-
-`pip` é o instalador de pacotes oficial do ecossistema Python. Ele baixa e instala pacotes (bibliotecas) publicados no Python Package Index (PyPI) ou em repositórios privados. Use `pip` para:
-
-- instalar pacotes individualmente: `pip install pacote`
-- instalar várias dependências de uma vez a partir de `requirements.txt`: `pip install -r requirements.txt`
-- gerar um `requirements.txt` com as versões atuais do ambiente: `pip freeze > requirements.txt`
-
-Dicas rápidas:
-
-- Prefira usar `pip` dentro de um ambiente virtual (`venv`/`virtualenv`) para evitar poluir o Python do sistema.
-- Quando for reproduzir o ambiente (por exemplo em produção, CI ou Databricks), mantenha um `requirements.txt` com versões fixas para garantir reprodutibilidade.
-
-## Usando dependencies no Databricks (resumo)
-
-Há uma pasta `databricks/` neste repositório com um `requirements.txt` (mesmo conteúdo do arquivo raiz) e um exemplo de init script em `databricks/init_scripts/install_requirements.sh`.
-
-Resumo de uso no Databricks:
-
-1. Faça upload de `databricks/requirements.txt` para DBFS (por exemplo em `/FileStore/requirements.txt`).
-2. Configure o script `databricks/init_scripts/install_requirements.sh` como Init Script do cluster (ou adapte o comando `pip install -r /dbfs/FileStore/requirements.txt` em notebooks ou jobs).
-3. Reinicie o cluster para que os pacotes sejam instalados no driver e nos workers.
-
-Consulte `databricks/README.md` para mais detalhes.
+Se quiser, eu simplifico ainda mais ou adiciono um `run.sh`/`run.ps1` para automatizar ativação + execução.*** End Patch
